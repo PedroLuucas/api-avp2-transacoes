@@ -3,6 +3,7 @@ namespace App\Models;
 
 use PDO;
 use PDOException;
+use Exception;
 
 class Transacao
 {
@@ -37,5 +38,18 @@ class Transacao
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ?: null;
+    }
+
+    public function apagarPorId(string $id): bool
+    {
+        $sql = "DELETE FROM transacoes WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        
+        try {
+            $stmt->execute([':id' => $id]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao apagar transação por ID: " . $e->getMessage(), 0, $e);
+        }
     }
 }
