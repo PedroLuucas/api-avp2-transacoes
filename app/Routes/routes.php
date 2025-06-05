@@ -52,4 +52,10 @@ return function (App $app) {
         return $controller->apagar($request, $response, $args);
     });
 
+    $app->get('/estatistica', function (Request $request, Response $response) use ($createPdoConnection) {
+        $db = $createPdoConnection();
+        $controller = new TransacaoController($db);
+        return $controller->estatisticas($request, $response);
+    });
+
 };
