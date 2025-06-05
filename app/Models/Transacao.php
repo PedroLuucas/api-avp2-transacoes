@@ -26,11 +26,14 @@ class Transacao
                 ':dataHora' => $data['dataHora'],
             ]);
         } catch (PDOException $e) {
-            throw new Exception("Erro ao inserir transação: " . $e->getMessage(), 0, $e);
+            if ($e->getCode() === '23000') {
+                throw new Exception("ID da transação já existe.", 0, $e);
+            }
+            throw new Exception("Erro ao inserir transação no banco de dados: " . $e->getMessage(), 0, $e);
         }
     }
 
-     public function buscarPorId(string $id): ?array
+    public function buscarPorId(string $id): ?array
     {
         $sql = "SELECT id, valor, dataHora FROM transacoes WHERE id = :id LIMIT 1";
         $stmt = $this->db->prepare($sql);
@@ -61,7 +64,7 @@ class Transacao
             $stmt->execute([':id' => $id]);
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            throw new Exception("Erro ao apagar transação por ID: " . $e->getMessage(), 0, $e);
+            throw new Exception("Erro ao apagar transação por ID no banco de dados: " . $e->getMessage(), 0, $e);
         }
     }
 

@@ -2,6 +2,11 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Slim\Factory\AppFactory;
+use App\Utils\SimpleContainer;
+
+$container = new SimpleContainer();
+
+AppFactory::setContainer($container);
 
 $app = AppFactory::create();
 
@@ -13,6 +18,6 @@ $app->addBodyParsingMiddleware();
 
 $app->addRoutingMiddleware();
 
-$app->addErrorMiddleware(true, true, true); // (displayErrorDetails, logErrors, logErrorDetails)
+$app->addErrorMiddleware(true, true, true);
 
 $app->run();

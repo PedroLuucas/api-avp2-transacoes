@@ -31,8 +31,8 @@ class TransacaoController
             $transacao->criar($data);
             return $response->withStatus(201);
         } catch (Exception $e) {
-            if (strpos($e->getMessage(), 'Duplicate entry') !== false && strpos($e->getMessage(), 'for key \'PRIMARY\'') !== false) {
-                return $response->withStatus(422);
+            if (strpos($e->getMessage(), 'ID da transação já existe.') !== false) {
+                 return $response->withStatus(422);
             }
             return $response->withStatus(400);
         }
@@ -50,18 +50,18 @@ class TransacaoController
             return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
         }
 
-        return $response->withStatus(404); 
+        return $response->withStatus(404);
     }
 
-    public function apagarTudo(): void
+    public function apagarTudo(Request $request, Response $response): Response
     {
-        $this->db->beginTransaction();
         try {
-            $this->db->exec("DELETE FROM transacoes");
-            $this->db->commit();
-        } catch (PDOException $e) {
-            $this->db->rollBack();
-            throw new Exception("Erro ao apagar todas as transações: " . $e->getMessage(), 0, $e);
+            $transacaoModel = new Transacao($this->db);
+            $transacaoModel->apagarTudo();
+            return $response->withStatus(200);
+        } catch (Exception $e) {
+            error_log("Erro ao apagar todas as transações: " . $e->getMessage());
+            return $response->withStatus(500);
         }
     }
 
