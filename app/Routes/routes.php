@@ -46,4 +46,10 @@ return function (App $app) {
         return $controller->apagarTudo($request, $response);
     });
 
+    $app->delete('/transacao/{id}', function (Request $request, Response $response, array $args) use ($createPdoConnection) {
+        $db = $createPdoConnection();
+        $controller = new TransacaoController($db);
+        return $controller->apagar($request, $response, $args);
+    });
+
 };
