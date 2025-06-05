@@ -36,4 +36,19 @@ class TransacaoController
             return $response->withStatus(400);
         }
     }
+
+    public function buscar(Request $request, Response $response, array $args): Response
+    {
+        $id = $args['id'];
+
+        $transacaoModel = new Transacao($this->db);
+        $dados = $transacaoModel->buscarPorId($id);
+
+        if ($dados) {
+            $response->getBody()->write(json_encode($dados));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        }
+
+        return $response->withStatus(404); 
+    }
 }
