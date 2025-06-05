@@ -28,4 +28,14 @@ class Transacao
             throw new Exception("Erro ao inserir transação: " . $e->getMessage(), 0, $e);
         }
     }
+
+     public function buscarPorId(string $id): ?array
+    {
+        $sql = "SELECT id, valor, dataHora FROM transacoes WHERE id = :id LIMIT 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
 }
