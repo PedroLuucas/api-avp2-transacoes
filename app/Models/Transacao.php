@@ -40,6 +40,18 @@ class Transacao
         return $result ?: null;
     }
 
+    public function apagarTudo(): void
+    {
+        $this->db->beginTransaction();
+        try {
+            $this->db->exec("DELETE FROM transacoes");
+            $this->db->commit();
+        } catch (PDOException $e) {
+            $this->db->rollBack();
+            throw new Exception("Erro ao apagar todas as transações: " . $e->getMessage(), 0, $e);
+        }
+    }
+
     public function apagarPorId(string $id): bool
     {
         $sql = "DELETE FROM transacoes WHERE id = :id";
