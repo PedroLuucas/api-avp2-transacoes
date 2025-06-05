@@ -40,4 +40,10 @@ return function (App $app) {
         return $controller->buscar($request, $response, $args);
     });
 
+    $app->delete('/transacao', function (Request $request, Response $response) use ($createPdoConnection) {
+        $db = $createPdoConnection();
+        $controller = new TransacaoController($db);
+        return $controller->apagarTudo($request, $response);
+    });
+
 };
