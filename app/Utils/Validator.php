@@ -5,7 +5,18 @@ class Validator
 {
     public static function validarTransacao(array $data): bool
     {
-        if (!isset($data['id'], $data['valor'], $data['dataHora'])) {
+        if (!self::isISO8601($data['dataHora'])) {
+            error_log("Validação: dataHora não é ISO8601: " . $data['dataHora']);
+            return false;
+        }
+
+        $dataHoraTimestamp = strtotime($data['dataHora']);
+        if ($dataHoraTimestamp === false) {
+            error_log("Validação: strtotime falhou para dataHora: " . $data['dataHora']);
+            return false;
+        }
+        if ($dataHoraTimestamp > time()) {
+            error_log("Validação: dataHora no futuro. Enviada: " . date('Y-m-d H:i:s', $dataHoraTimestamp) . ", Agora: " . date('Y-m-d H:i:s', time()));
             return false;
         }
 
