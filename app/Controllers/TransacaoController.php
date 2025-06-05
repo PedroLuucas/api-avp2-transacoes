@@ -5,6 +5,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Models\Transacao;
 use App\Utils\Validator;
+use App\Services\EstatisticaService;
 use PDO;
 use Exception;
 
@@ -76,6 +77,20 @@ class TransacaoController
             return $response->withStatus(404);
         } catch (Exception $e) {
             error_log("Erro ao apagar transação por ID: " . $e->getMessage());
+            return $response->withStatus(500);
+        }
+    }
+
+    public function estatisticas(Request $request, Response $response): Response
+    {
+        try {
+            $estatisticaService = new EstatisticaService($this->db);
+            $resultado = $estatisticaService->calcular();
+
+            $response->getBody()->write(json_encode($resultado));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        } catch (Exception $e) {
+            error_log("Erro ao calcular estatísticas: " . $e->getMessage());
             return $response->withStatus(500);
         }
     }

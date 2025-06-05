@@ -64,4 +64,11 @@ class Transacao
             throw new Exception("Erro ao apagar transação por ID: " . $e->getMessage(), 0, $e);
         }
     }
+
+    public function transacoesUltimoMinuto(): array
+    {
+        $sql = "SELECT valor FROM transacoes WHERE dataHora >= NOW() - INTERVAL 60 SECOND";
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
