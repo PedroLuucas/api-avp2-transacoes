@@ -34,4 +34,10 @@ return function (App $app) {
         return $controller->criar($request, $response);
     });
 
+    $app->get('/transacao/{id}', function (Request $request, Response $response, array $args) use ($createPdoConnection) {
+        $db = $createPdoConnection();
+        $controller = new TransacaoController($db);
+        return $controller->buscar($request, $response, $args);
+    });
+
 };
