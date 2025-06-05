@@ -51,4 +51,20 @@ class TransacaoController
 
         return $response->withStatus(404); 
     }
+
+    public function apagar(Request $request, Response $response, array $args): Response
+    {
+        $id = $args['id'];
+        
+        try {
+            $transacaoModel = new Transacao($this->db);
+            if ($transacaoModel->apagarPorId($id)) {
+                return $response->withStatus(200);
+            }
+            return $response->withStatus(404);
+        } catch (Exception $e) {
+            error_log("Erro ao apagar transação por ID: " . $e->getMessage());
+            return $response->withStatus(500);
+        }
+    }
 }
